@@ -13,3 +13,9 @@
 /manual-install/docker-compose.yml
 /manual-install/compose.yaml
 /manual-install/.env
+
+# Local fork-and-run-local lifecycle (secrets, overrides, proxy pid)
+scripts/nextcloud-app.env
+scripts/.nextcloud-lan-proxy.pid
+scripts/__pycache__/
+docker-compose.override.yml
