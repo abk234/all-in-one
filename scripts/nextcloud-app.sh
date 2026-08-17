@@ -212,6 +212,23 @@ trust_lan_domain() {
   docker exec nextcloud-aio-nextcloud php occ config:system:set trusted_domains 11 --value="${lip}:${APACHE_PORT}" >/dev/null 2>&1 || true
 }
 
+# AIO defaults EuroOffice to https://nextcloud.local; this local stack is HTTP on the LAN IP.
+fix_local_office() {
+  nextcloud_running || return 0
+  docker ps --format '{{.Names}}' 2>/dev/null | grep -qx 'nextcloud-aio-eurooffice' || return 0
+  local lip
+  lip="$(lan_ip)"
+  [[ -n "$lip" ]] || return 0
+  info "pointing Nextcloud Office (EuroOffice) at http://${lip}:${APACHE_PORT}/eurooffice"
+  docker exec nextcloud-aio-nextcloud php occ config:app:set eurooffice DocumentServerUrl --value="http://${lip}:${APACHE_PORT}/eurooffice" >/dev/null 2>&1 || true
+  docker exec nextcloud-aio-nextcloud php occ config:app:set eurooffice DocumentServerInternalUrl --value='http://nextcloud-aio-eurooffice/' >/dev/null 2>&1 || true
+  docker exec nextcloud-aio-nextcloud php occ config:app:set eurooffice StorageUrl --value="http://${lip}:${APACHE_PORT}/" >/dev/null 2>&1 || true
+  if docker ps --format '{{.Names}}' 2>/dev/null | grep -qx 'nextcloud-aio-apache'; then
+    docker exec nextcloud-aio-apache sh -c "sed -i 's/header_up X-Forwarded-Proto https/header_up X-Forwarded-Proto http/g' /tmp/Caddyfile" 2>/dev/null || true
+    docker exec nextcloud-aio-apache sh -c 'kill -USR1 "$(pgrep -x caddy)" 2>/dev/null || true' || true
+  fi
+}
+
 cmd_start() {
   require_docker
   ensure_runtime_files
@@ -226,6 +243,7 @@ cmd_start() {
     docker exec --env START_CONTAINERS=1 "$MASTER" /daily-backup.sh || warn "START_CONTAINERS returned non-zero (AIO may still be booting)"
     sleep 3
     trust_lan_domain
+    fix_local_office
   else
     info "first run: open the AIO interface, accept the self-signed cert, save the passphrase,"
     info "then enter a domain (skip validation is on) and click Start containers."
@@ -472,6 +490,7 @@ cmd_update() {
     docker exec --env AUTOMATIC_UPDATES=1 "$MASTER" /daily-backup.sh || warn "AUTOMATIC_UPDATES returned non-zero"
     sleep 3
     trust_lan_domain
+    fix_local_office
   fi
 
   info "update complete"
