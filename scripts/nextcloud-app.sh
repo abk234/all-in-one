@@ -161,6 +161,24 @@ wait_master() {
   warn "mastercontainer did not become running within 120s"
 }
 
+container_health() {
+  docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$1" 2>/dev/null || echo missing
+}
+
+wait_nextcloud() {
+  local i st
+  for i in $(seq 1 90); do
+    st="$(container_health nextcloud-aio-nextcloud)"
+    if [[ "$st" == "healthy" ]]; then
+      # Entrypoint rewrites EuroOffice URLs; wait until it has finished.
+      sleep 5
+      return 0
+    fi
+    sleep 2
+  done
+  warn "nextcloud container did not become healthy within 180s"
+}
+
 LAN_PROXY="$ROOT/scripts/nextcloud-lan-proxy.py"
 LAN_PROXY_PID="$ROOT/scripts/.nextcloud-lan-proxy.pid"
 
@@ -241,7 +259,7 @@ cmd_start() {
   if aio_initialized && master_running; then
     info "existing AIO instance detected — starting Nextcloud containers"
     docker exec --env START_CONTAINERS=1 "$MASTER" /daily-backup.sh || warn "START_CONTAINERS returned non-zero (AIO may still be booting)"
-    sleep 3
+    wait_nextcloud
     trust_lan_domain
     fix_local_office
   else
@@ -488,7 +506,7 @@ cmd_update() {
   if aio_initialized && master_running; then
     info "updating and starting Nextcloud sibling containers via AIO"
     docker exec --env AUTOMATIC_UPDATES=1 "$MASTER" /daily-backup.sh || warn "AUTOMATIC_UPDATES returned non-zero"
-    sleep 3
+    wait_nextcloud
     trust_lan_domain
     fix_local_office
   fi
