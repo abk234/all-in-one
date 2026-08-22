@@ -36,6 +36,8 @@ Commands:
   update                Backup (if due) → optional git sync → pull & recreate (data kept)
   install-autostart     Install macOS LaunchAgent (start on login, keeps LAN proxy up)
   uninstall-autostart   Remove the LaunchAgent
+  install-backup-schedule   Install monthly host backup (1st of month, 03:15)
+  uninstall-backup-schedule Remove the monthly backup LaunchAgent
   schedule-hint         Print cron / launchd examples for monthly backups
   help                  Show this help
 
@@ -633,11 +635,87 @@ cmd_schedule_hint() {
 # StartCalendarInterval: Day=1 Hour=3 Minute=15
 
 # Always-on (login): scripts/nextcloud-app.sh install-autostart
+# Monthly backup:   scripts/nextcloud-app.sh install-backup-schedule
 
 Config file: $CONFIG_FILE
 BACKUP_DIR=$BACKUP_DIR
 BACKUP_INTERVAL_DAYS=$BACKUP_INTERVAL_DAYS
 EOF
+}
+
+BACKUP_SCHEDULE_LABEL="com.nextcloud.host-backup"
+BACKUP_SCHEDULE_PLIST="${HOME}/Library/LaunchAgents/${BACKUP_SCHEDULE_LABEL}.plist"
+
+cmd_install_backup_schedule() {
+  local script="$ROOT/scripts/nextcloud-app.sh"
+  mkdir -p "$BACKUP_DIR"
+  mkdir -p "${HOME}/Library/LaunchAgents"
+  cat >"$BACKUP_SCHEDULE_PLIST" <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.nextcloud.host-backup</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>-lc</string>
+    <string>__BACKUP_CMD__</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__ROOT__</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Day</key>
+    <integer>1</integer>
+    <key>Hour</key>
+    <integer>3</integer>
+    <key>Minute</key>
+    <integer>15</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>__LOG_PATH__</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_PATH__</string>
+  <key>RunAtLoad</key>
+  <false/>
+</dict>
+</plist>
+PLIST
+  local backup_cmd log_path backup_cmd_esc log_path_esc root_esc
+  backup_cmd="for i in \$(seq 1 60); do docker info >/dev/null 2>&1 && break; sleep 5; done; exec ${script} backup --if-due"
+  log_path="${BACKUP_DIR}/backup.log"
+  backup_cmd_esc="$(escape_sed_replacement "$backup_cmd")"
+  log_path_esc="$(escape_sed_replacement "$log_path")"
+  root_esc="$(escape_sed_replacement "$ROOT")"
+  # shellcheck disable=SC2016
+  sed -i '' \
+    -e "s|__BACKUP_CMD__|${backup_cmd_esc}|" \
+    -e "s|__ROOT__|${root_esc}|" \
+    -e "s|__LOG_PATH__|${log_path_esc}|" \
+    "$BACKUP_SCHEDULE_PLIST"
+  launchctl bootout "gui/$(id -u)/${BACKUP_SCHEDULE_LABEL}" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$BACKUP_SCHEDULE_PLIST"
+  info "installed monthly backup LaunchAgent: $BACKUP_SCHEDULE_PLIST"
+  info "runs on the 1st of each month at 03:15 (backup --if-due, interval ${BACKUP_INTERVAL_DAYS} days)"
+  info "log: ${log_path}"
+  info "remove with: $0 uninstall-backup-schedule"
+}
+
+cmd_uninstall_backup_schedule() {
+  launchctl bootout "gui/$(id -u)/${BACKUP_SCHEDULE_LABEL}" 2>/dev/null || true
+  rm -f "$BACKUP_SCHEDULE_PLIST"
+  info "removed LaunchAgent ${BACKUP_SCHEDULE_LABEL}"
+}
+
+escape_sed_replacement() {
+  # Escape &, \, and | for use in sed replacement with | delimiter.
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//|/\\|}"
+  s="${s//&/\\&}"
+  printf '%s' "$s"
 }
 
 AUTOSTART_LABEL="com.nextcloud.aio.autostart"
@@ -668,13 +746,15 @@ cmd_install_autostart() {
 </dict>
 </plist>
 PLIST
-  local start_cmd log_path
+  local start_cmd log_path start_cmd_esc log_path_esc
   start_cmd="for i in \$(seq 1 60); do docker info >/dev/null 2>&1 && break; sleep 5; done; exec ${script} start"
   log_path="${ROOT}/scripts/.nextcloud-autostart.log"
+  start_cmd_esc="$(escape_sed_replacement "$start_cmd")"
+  log_path_esc="$(escape_sed_replacement "$log_path")"
   # shellcheck disable=SC2016
   sed -i '' \
-    -e "s|__START_CMD__|${start_cmd}|" \
-    -e "s|__LOG_PATH__|${log_path}|" \
+    -e "s|__START_CMD__|${start_cmd_esc}|" \
+    -e "s|__LOG_PATH__|${log_path_esc}|" \
     "$AUTOSTART_PLIST"
   launchctl bootout "gui/$(id -u)/${AUTOSTART_LABEL}" 2>/dev/null || true
   launchctl bootstrap "gui/$(id -u)" "$AUTOSTART_PLIST"
@@ -706,6 +786,8 @@ main() {
     update) cmd_update "$@" ;;
     install-autostart) cmd_install_autostart ;;
     uninstall-autostart) cmd_uninstall_autostart ;;
+    install-backup-schedule) cmd_install_backup_schedule ;;
+    uninstall-backup-schedule) cmd_uninstall_backup_schedule ;;
     schedule-hint) cmd_schedule_hint ;;
     *) die "unknown command: $cmd (try help)" ;;
   esac
