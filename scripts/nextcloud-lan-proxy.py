@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import argparse
 import os
-import select
 import signal
 import socket
 import sys
@@ -22,43 +21,46 @@ DEFAULT_MAPS = ((11000, 11000), (8080, 8080))
 PID_FILE_DEFAULT = os.path.join(os.path.dirname(__file__), ".nextcloud-lan-proxy.pid")
 
 
-def pipe(a: socket.socket, b: socket.socket) -> None:
+def relay(src: socket.socket, dst: socket.socket) -> None:
     try:
         while True:
-            r, _, _ = select.select([a, b], [], [], 60)
-            if not r:
-                continue
-            for src in r:
-                dst = b if src is a else a
-                data = src.recv(65536)
-                if not data:
-                    return
-                dst.sendall(data)
+            data = src.recv(65536)
+            if not data:
+                break
+            dst.sendall(data)
     except OSError:
         pass
     finally:
-        for s in (a, b):
+        for s in (src, dst):
             try:
                 s.shutdown(socket.SHUT_RDWR)
-            except OSError:
-                pass
-            try:
-                s.close()
             except OSError:
                 pass
 
 
 def handle(client: socket.socket, target: tuple[str, int]) -> None:
     upstream = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    upstream.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
     try:
+        upstream.settimeout(30)
         upstream.connect(target)
+        upstream.settimeout(None)
     except OSError as exc:
-        print(f"proxy: connect to {target} failed: {exc}", file=sys.stderr)
+        print(f"proxy: connect to {target} failed: {exc}", file=sys.stderr, flush=True)
         client.close()
         return
-    t1 = threading.Thread(target=pipe, args=(client, upstream), daemon=True)
+    t1 = threading.Thread(target=relay, args=(client, upstream), daemon=True)
+    t2 = threading.Thread(target=relay, args=(upstream, client), daemon=True)
     t1.start()
+    t2.start()
     t1.join()
+    t2.join()
+    for s in (client, upstream):
+        try:
+            s.close()
+        except OSError:
+            pass
 
 
 def serve_one(listen: tuple[str, int], target: tuple[str, int]) -> None:
@@ -104,16 +106,18 @@ def main() -> None:
     maps = args.maps if args.maps else list(DEFAULT_MAPS)
 
     if args.daemon:
-        if os.fork() != 0:
+        # Single fork + new session is more reliable with threading than double-fork.
+        pid = os.fork()
+        if pid > 0:
             sys.exit(0)
         os.setsid()
-        if os.fork() != 0:
-            sys.exit(0)
         with open(args.pid_file, "w", encoding="utf-8") as fh:
             fh.write(str(os.getpid()))
+        log_path = args.pid_file + ".log"
+        log_fh = open(log_path, "a", encoding="utf-8")  # noqa: SIM115
         sys.stdin.close()
-        sys.stdout = open(os.devnull, "w")  # noqa: SIM115
-        sys.stderr = open(os.devnull, "w")  # noqa: SIM115
+        sys.stdout = log_fh
+        sys.stderr = log_fh
 
     def _stop(*_args: object) -> None:
         sys.exit(0)

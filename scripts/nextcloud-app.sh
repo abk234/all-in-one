@@ -28,11 +28,14 @@ Usage: scripts/nextcloud-app.sh <command> [options]
 Commands:
   start                 Start Nextcloud AIO in the background
   stop                  Stop containers (keeps all data)
+  restart               stop then start (with readiness checks)
   down                  Remove the mastercontainer (keeps volumes; never uses -v)
   status                Show stack, ports, and backup status
   backup                Create a backup now
   backup --if-due       Backup only if last one is older than BACKUP_INTERVAL_DAYS
   update                Backup (if due) → optional git sync → pull & recreate (data kept)
+  install-autostart     Install macOS LaunchAgent (start on login, keeps LAN proxy up)
+  uninstall-autostart   Remove the LaunchAgent
   schedule-hint         Print cron / launchd examples for monthly backups
   help                  Show this help
 
@@ -179,6 +182,71 @@ wait_nextcloud() {
   warn "nextcloud container did not become healthy within 180s"
 }
 
+wait_apache() {
+  local i st
+  for i in $(seq 1 60); do
+    st="$(container_health nextcloud-aio-apache)"
+    if [[ "$st" == "healthy" ]]; then
+      return 0
+    fi
+    sleep 2
+  done
+  warn "apache container did not become healthy within 120s"
+}
+
+http_code() {
+  local url="$1"
+  curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "$url" 2>/dev/null || echo "000"
+}
+
+wait_http_ready() {
+  local url="$1" i code
+  for i in $(seq 1 45); do
+    code="$(http_code "$url")"
+    if [[ "$code" =~ ^[23] ]]; then
+      return 0
+    fi
+    sleep 2
+  done
+  warn "HTTP not ready at $url within 90s (last code: ${code:-000})"
+  return 1
+}
+
+verify_connectivity() {
+  local lip local_url lan_url local_code lan_code tries=0
+  lip="$(lan_ip)"
+  local_url="http://127.0.0.1:${APACHE_PORT}/"
+  lan_url=""
+  [[ -n "$lip" ]] && lan_url="http://${lip}:${APACHE_PORT}/"
+
+  while [[ "$tries" -lt 3 ]]; do
+    local_code="$(http_code "$local_url")"
+    if [[ -n "$lan_url" ]]; then
+      lan_code="$(http_code "$lan_url")"
+    else
+      lan_code="skip"
+    fi
+
+    if [[ "$local_code" =~ ^[23] ]] && { [[ "$lan_code" == "skip" ]] || [[ "$lan_code" =~ ^[23] ]]; }; then
+      if [[ "$lan_code" == "skip" ]]; then
+        info "connectivity OK (localhost=${local_code})"
+      else
+        info "connectivity OK (localhost=${local_code}, LAN=${lan_code})"
+      fi
+      return 0
+    fi
+
+    tries=$((tries + 1))
+    warn "connectivity check failed (localhost=${local_code:-000}, LAN=${lan_code:-000}); restarting LAN proxy (attempt ${tries}/3)"
+    start_lan_proxy
+    sleep 2
+  done
+
+  warn "could not verify HTTP access - try: $0 restart"
+  warn "if LAN fails but localhost works, allow incoming connections for Python in System Settings > Network > Firewall"
+  return 1
+}
+
 LAN_PROXY="$ROOT/scripts/nextcloud-lan-proxy.py"
 LAN_PROXY_PID="$ROOT/scripts/.nextcloud-lan-proxy.pid"
 
@@ -254,11 +322,11 @@ cmd_start() {
   compose pull
   compose up -d --remove-orphans
   wait_master
-  start_lan_proxy
 
   if aio_initialized && master_running; then
     info "existing AIO instance detected — starting Nextcloud containers"
     docker exec --env START_CONTAINERS=1 "$MASTER" /daily-backup.sh || warn "START_CONTAINERS returned non-zero (AIO may still be booting)"
+    wait_apache
     wait_nextcloud
     trust_lan_domain
     fix_local_office
@@ -268,8 +336,19 @@ cmd_start() {
     info "Use skip_domain_validation if prompted: https://127.0.0.1:${AIO_PORT}/containers?skip_domain_validation"
   fi
 
+  # Start LAN proxy only after apache is listening (daily-backup.sh restarts containers).
+  wait_http_ready "http://127.0.0.1:${APACHE_PORT}/" || true
+  start_lan_proxy
+  verify_connectivity || true
+
   print_urls
   compose ps
+}
+
+cmd_restart() {
+  cmd_stop
+  sleep 2
+  cmd_start
 }
 
 cmd_stop() {
@@ -316,6 +395,7 @@ cmd_status() {
   echo "interval:   every $BACKUP_INTERVAL_DAYS day(s), keep $BACKUP_KEEP"
   echo
 
+  local latest age local_code lan_code
   if stack_running; then
     compose ps
   else
@@ -325,8 +405,21 @@ cmd_status() {
   echo "AIO containers:"
   docker ps --filter 'name=nextcloud-aio-' --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' 2>/dev/null || echo "(none)"
   echo
+  if nextcloud_running; then
+    local_code="$(http_code "http://127.0.0.1:${APACHE_PORT}/")"
+    echo "HTTP localhost: ${local_code}"
+    if [[ -n "$lip" ]]; then
+      lan_code="$(http_code "http://${lip}:${APACHE_PORT}/")"
+      echo "HTTP LAN (${lip}): ${lan_code}"
+    fi
+    if [[ -f "$LAN_PROXY_PID" ]]; then
+      echo "LAN proxy pid: $(cat "$LAN_PROXY_PID" 2>/dev/null || echo unknown)"
+    else
+      echo "LAN proxy: not running (run start to enable phone/LAN access)"
+    fi
+  fi
+  echo
 
-  local latest age
   if latest="$(last_backup_dir)"; then
     age="$(backup_age_days || echo '?')"
     echo "last backup: $latest (${age} day(s) ago)"
@@ -501,15 +594,23 @@ cmd_update() {
   compose pull
   compose up -d --remove-orphans --force-recreate
   wait_master
-  start_lan_proxy
 
   if aio_initialized && master_running; then
     info "updating and starting Nextcloud sibling containers via AIO"
     docker exec --env AUTOMATIC_UPDATES=1 "$MASTER" /daily-backup.sh || warn "AUTOMATIC_UPDATES returned non-zero"
-    wait_nextcloud
+  fi
+
+  wait_apache
+  wait_nextcloud
+  wait_http_ready "http://127.0.0.1:${APACHE_PORT}/" || true
+  start_lan_proxy
+
+  if aio_initialized && master_running; then
     trust_lan_domain
     fix_local_office
   fi
+
+  verify_connectivity || true
 
   info "update complete"
   print_urls
@@ -531,10 +632,61 @@ cmd_schedule_hint() {
 #               --if-due
 # StartCalendarInterval: Day=1 Hour=3 Minute=15
 
+# Always-on (login): scripts/nextcloud-app.sh install-autostart
+
 Config file: $CONFIG_FILE
 BACKUP_DIR=$BACKUP_DIR
 BACKUP_INTERVAL_DAYS=$BACKUP_INTERVAL_DAYS
 EOF
+}
+
+AUTOSTART_LABEL="com.nextcloud.aio.autostart"
+AUTOSTART_PLIST="${HOME}/Library/LaunchAgents/${AUTOSTART_LABEL}.plist"
+
+cmd_install_autostart() {
+  local script="$ROOT/scripts/nextcloud-app.sh"
+  mkdir -p "${HOME}/Library/LaunchAgents"
+  cat >"$AUTOSTART_PLIST" <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.nextcloud.aio.autostart</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>-lc</string>
+    <string>__START_CMD__</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__LOG_PATH__</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_PATH__</string>
+</dict>
+</plist>
+PLIST
+  local start_cmd log_path
+  start_cmd="for i in \$(seq 1 60); do docker info >/dev/null 2>&1 && break; sleep 5; done; exec ${script} start"
+  log_path="${ROOT}/scripts/.nextcloud-autostart.log"
+  # shellcheck disable=SC2016
+  sed -i '' \
+    -e "s|__START_CMD__|${start_cmd}|" \
+    -e "s|__LOG_PATH__|${log_path}|" \
+    "$AUTOSTART_PLIST"
+  launchctl bootout "gui/$(id -u)/${AUTOSTART_LABEL}" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$AUTOSTART_PLIST"
+  info "installed LaunchAgent: $AUTOSTART_PLIST"
+  info "Nextcloud will start automatically when you log in (waits up to 5 min for Docker Desktop)."
+  info "Remove with: $0 uninstall-autostart"
+}
+
+cmd_uninstall_autostart() {
+  launchctl bootout "gui/$(id -u)/${AUTOSTART_LABEL}" 2>/dev/null || true
+  rm -f "$AUTOSTART_PLIST"
+  info "removed LaunchAgent ${AUTOSTART_LABEL}"
 }
 
 main() {
@@ -547,10 +699,13 @@ main() {
     -h|--help|help) usage ;;
     start) cmd_start ;;
     stop) cmd_stop ;;
+    restart) cmd_restart ;;
     down) cmd_down ;;
     status) cmd_status ;;
     backup) do_backup "$@" ;;
     update) cmd_update "$@" ;;
+    install-autostart) cmd_install_autostart ;;
+    uninstall-autostart) cmd_uninstall_autostart ;;
     schedule-hint) cmd_schedule_hint ;;
     *) die "unknown command: $cmd (try help)" ;;
   esac
