@@ -1,2 +1,305 @@
 nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
 nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+proxy: connect to ('127.0.0.1', 8080) failed: [Errno 49] Can't assign requested address
+proxy: connect to ('127.0.0.1', 8080) failed: [Errno 49] Can't assign requested address
+proxy: connect to ('127.0.0.1', 11000) failed: [Errno 49] Can't assign requested address
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+Exception in thread Thread-3 (handle):
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+Exception in thread Thread-3 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+Exception in thread Thread-3 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+Exception in thread Thread-3 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-4 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-5 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-6 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-7 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-8 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-9 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-10 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-11 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-12 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-13 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-14 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+Exception in thread Thread-3 (handle):
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+Exception in thread Thread-3 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+Exception in thread Thread-3 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+Exception in thread Thread-3 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-4 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-5 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-6 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-7 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-8 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+Exception in thread Thread-9 (handle):
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lxupkzwjs/workspace_for_ai/eval/nextcloud/scripts/nextcloud-lan-proxy.py", line 44, in handle
+    client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+nextcloud-lan-proxy listening on 0.0.0.0:8080 → 127.0.0.1:8080
+nextcloud-lan-proxy listening on 0.0.0.0:11000 → 127.0.0.1:11000
